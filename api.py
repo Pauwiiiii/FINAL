@@ -1,6 +1,6 @@
-from flask import Flask, make_response, jsonify
+from flask import Flask, make_response, jsonify, request
 from flask_mysqldb import MySQL
-
+from datetime import datetime
 
 app = Flask(__name__)
 app.config["MYSQL_HOST"] = "127.0.0.1"
@@ -54,6 +54,29 @@ def get_dept_emp_by_emp_no(emp_no):
     # data = cur.fetchall()
     # cur.close()
 
+# POST method
+@app.route("/dept_emp", methods=["POST"])
+def add_dept_emp():
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    
+    emp_no = info["emp_no"] # Make sure the emp_no is exist in data base
+    dept_no = info["dept_no"]
+    from_date_str = info["from_date"]
+    to_date_str = info["to_date"]
+    
+    # Convert date strings to datetime objects
+    from_date = datetime.strptime(from_date_str, "%a, %d %b %Y %H:%M:%S %Z").date()
+    to_date = datetime.strptime(to_date_str, "%a, %d %b %Y %H:%M:%S %Z").date()
+    
+    cur.execute("INSERT INTO dept_emp (emp_no, dept_no, from_date, to_date) VALUES (%s, %s, %s, %s)", (emp_no, dept_no, from_date, to_date))
+    mysql.connection.commit()
+    
+    rows_affected = cur.rowcount 
+    cur.close()
+    
+    return make_response(jsonify({"Message": "Department employee added successfully", "rows_affected": rows_affected}), 201)
+
 if __name__ == "__main__":
     app.run(debug=True)
-
+    app.run(debug=True)
