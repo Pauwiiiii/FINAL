@@ -60,6 +60,7 @@ def add_dept_emp():
     cur = mysql.connection.cursor()
     info = request.get_json()
     
+    # Values
     emp_no = info["emp_no"] # Make sure the emp_no is exist in data base
     dept_no = info["dept_no"]
     from_date_str = info["from_date"]
@@ -76,6 +77,29 @@ def add_dept_emp():
     cur.close()
     
     return make_response(jsonify({"Message": "Department employee added successfully", "rows_affected": rows_affected}), 201)
+
+# UPDATE METHOD(PUT)
+@app.route("/dept_emp/<int:emp_no>", methods=["PUT"])
+def update_dept_emp(emp_no):
+    cur = mysql.connection.cursor()
+    info = request.get_json()
+    # Values
+    # emp_no = info["emp_no"] 
+    dept_no = info["dept_no"] # Make sure the dept_no is exist in data base
+    from_date_str = info["from_date"]
+    to_date_str = info["to_date"]
+    
+    # Convert date strings to datetime objects
+    from_date = datetime.strptime(from_date_str, "%a, %d %b %Y %H:%M:%S %Z").date()
+    to_date = datetime.strptime(to_date_str, "%a, %d %b %Y %H:%M:%S %Z").date()
+
+    cur.execute(""" UPDATE dept_emp SET dept_no = %s, from_date = %s, to_date = %s where emp_no = %s  """, (dept_no, from_date, to_date, emp_no))
+    mysql.connection.commit()
+    
+    rows_affected = cur.rowcount 
+    cur.close()
+    
+    return make_response(jsonify({"Message": "Department employee updated successfully", "rows_affected": rows_affected}), 200)
 
 if __name__ == "__main__":
     app.run(debug=True)
