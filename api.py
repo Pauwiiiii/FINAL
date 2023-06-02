@@ -15,11 +15,11 @@ mysql = MySQL(app)
 @app.route("/")
 
 
-@app.route("/employees", methods=["GET"])
-def get_employees():
+@app.route("/dept_emp", methods=["GET"])
+def get_dept_empt():
     cur =mysql.connection.cursor()
     query = """
-    select * from employees
+    select * from dept_emp
     """
     cur.execute(query)
     data = cur.fetchall()
