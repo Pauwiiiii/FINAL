@@ -14,13 +14,26 @@ app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 mysql = MySQL(app)
 @app.route("/")
 
-
+# Display query from employees data base and get from web application
 @app.route("/dept_emp", methods=["GET"])
-def get_dept_empt():
+def get_dept_emp():
     cur =mysql.connection.cursor()
     query = """
-    select * from dept_emp
+    select * from dept_emp w
     """
+    cur.execute(query)
+    data = cur.fetchall()
+    cur.close()
+
+    return make_response(jsonify(data), 200)
+
+# New function before refractor
+@app.route("/dept_emp/<int:emp_no>", methods=["GET"])
+def get_dept_emp_by_emp_no(empt_no):
+    cur =mysql.connection.cursor()
+    query = """
+    select * from dept_emp where empt_no = {}
+    """.format(empt_no)
     cur.execute(query)
     data = cur.fetchall()
     cur.close()
