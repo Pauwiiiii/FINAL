@@ -29,11 +29,11 @@ def get_dept_emp():
 
 # New function before refractor
 @app.route("/dept_emp/<int:emp_no>", methods=["GET"])
-def get_dept_emp_by_emp_no(empt_no):
+def get_dept_emp_by_emp_no(emp_no):
     cur =mysql.connection.cursor()
     query = """
-    select * from dept_emp where empt_no = {}
-    """.format(empt_no)
+    select * from dept_emp where emp_no = {}
+    """.format(emp_no)
     cur.execute(query)
     data = cur.fetchall()
     cur.close()
