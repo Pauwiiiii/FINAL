@@ -163,5 +163,36 @@ def del_dept_emp(emp_no):
     return make_response(jsonify({"message": "Dept_emp deleted successfully",
                                    "rows_affected": rows_affected}), 200)
 
+# Add new route for handling searchrequest
+# Search method for dept_emp table
+@app.route("/dept_emp/search", methods=["GET"])
+def search_dept_emp():
+    format_param = request.args.get("format", "json")
+
+    # Extract the search criteria from the query parameters
+    emp_no = request.args.get("emp_no")
+    dept_no = request.args.get("dept_no")
+
+    # Construct the SQL query based on the search criteria
+    query = "SELECT * FROM dept_emp WHERE 1=1"
+    params = []
+
+    if emp_no:
+        query += " AND emp_no = %s"
+        params.append(emp_no)
+    if dept_no:
+        query += " AND dept_no = %s"
+        params.append(dept_no)
+
+    # Fetch the matching records from the database
+    data = data_fetch(query, tuple(params))
+
+    if format_param.lower() == "xml":
+        xml_data = generate_xml_response(data)
+        return Response(xml_data, mimetype="application/xml")
+
+    return make_response(jsonify(data), 200)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
