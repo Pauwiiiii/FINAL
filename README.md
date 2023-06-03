@@ -27,7 +27,7 @@ After connecting your data base in python
 
 Lastly 
 - Dont forget to make commit in every method you aadd in your code
-- then push it to your repository
+- then push it to your repository then clone to your local
 
 NOTE: Make sure the all data especially the data base is connected 
 TRY IT AND ENJOY
